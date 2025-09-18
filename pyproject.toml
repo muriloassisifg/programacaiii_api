@@ -3,7 +3,7 @@ name = "programacaiii_api"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Murilo",email = "felipebrdv@gmail.com"}
+    {name = "Murilo",email = "murilo.assis@ifg.edu.br.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.11"
@@ -18,7 +18,20 @@ dependencies = [
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+
 [tool.poetry]
+name = "programacaiii_api"
+version = "0.1.0"
+description = "API para a disciplina de Programação III"
+authors = ["Murilo <murilo.assis@ifg.edu.br.com>"]
 packages = [
     { include = "main.py" }
 ]
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+sqlalchemy = "^2.0.43"
+psycopg2-binary = "^2.9.10"
+fastapi = "^0.116.2"
+uvicorn = "^0.35.0"
+email-validator = "^2.3.0"

@@ -2,6 +2,12 @@ import uvicorn
 from fastapi import FastAPI
 
 from users import user_controller
+from database import engine, Base
+
+# Linha mágica que instrui o SQLAlchemy a criar todas as tabelas
+# que herdam da nossa Base (definida em database.py) no banco de dados.
+# Isso só deve ser usado em desenvolvimento para facilitar o setup.
+Base.metadata.create_all(bind=engine)
 
 # 1. Cria a instância principal da aplicação
 app = FastAPI(
