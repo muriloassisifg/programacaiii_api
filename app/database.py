@@ -20,3 +20,14 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # 4. Cria uma classe Base. Nossos modelos de tabela do SQLAlchemy herdarão desta
 #    classe para que o ORM possa gerenciá-los.
 Base = declarative_base()
+
+# Esta função é a nossa "Injeção de Dependência".
+# O FastAPI vai chamá-la para cada requisição que precisar de uma sessão com o banco.
+# A palavra 'yield' entrega a sessão para a rota e, quando a rota termina,
+# o código após o 'yield' (db.close()) é executado, garantindo que a conexão seja fechada.
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

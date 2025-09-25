@@ -5,15 +5,11 @@ from fastapi import HTTPException, status
 from . import user_repository, user_model
 
 def create_new_user(db: Session, user: user_model.UserCreate):
-    """Serviço para criar um novo usuário com regra de negócio."""
-    # REGRA DE NEGÓCIO: Antes de criar, verificar se o e-mail já está em uso.
     db_user = user_repository.get_user_by_email(db, email=user.email)
     if db_user:
-        # Se o usuário já existe, lança uma exceção HTTP que o FastAPI retornará ao cliente.
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
-    # Se a regra passar, chama o repositório para efetivamente criar o usuário.
-    return user_repository.create_user(db=db, user=user)
+    return user_repository.create_user(db=db, user=user, role_id=user.role_id)
 
 def get_all_users(db: Session):
     """Serviço para listar todos os usuários. Neste caso, apenas repassa a chamada."""

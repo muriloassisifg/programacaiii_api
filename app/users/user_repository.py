@@ -2,6 +2,7 @@
 
 from sqlalchemy.orm import Session
 from . import user_model
+from security import get_password_hash
 
 # --- FUNÇÕES DE LEITURA (READ) ---
 
@@ -27,16 +28,22 @@ def get_users(db: Session):
 
 # --- FUNÇÃO DE CRIAÇÃO (CREATE) ---
 
-def create_user(db: Session, user: user_model.UserCreate):
+def create_user(db: Session, user: user_model.UserCreate, role_id: int = None):
     """
     Cria um novo usuário no banco de dados.
     """
-    # AVISO: A senha aqui ainda não está segura! Veremos como fazer o hash na próxima aula.
-    hashed_password = user.password
+    # Agora a senha é hasheada corretamente
+    hashed_password = get_password_hash(user.password)
 
     # Cria uma instância do modelo SQLAlchemy com os dados do schema Pydantic.
     # É aqui que os dados da API são transformados em um objeto que pode ser salvo no banco.
-    db_user = user_model.User(email=user.email, hashed_password=hashed_password, full_name=user.full_name)
+    db_user = user_model.User(
+        email=user.email, 
+        hashed_password=hashed_password, 
+        full_name=user.full_name,
+        profile_image_url=user.profile_image_url,
+        role_id=role_id
+    )
 
     db.add(db_user)      # Adiciona o novo objeto à sessão (área de preparação).
     db.commit()         # Salva (commita) as mudanças no banco de dados.

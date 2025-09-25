@@ -3,6 +3,8 @@ from fastapi import FastAPI
 
 from users import user_controller
 from database import engine, Base
+from roles import role_controller
+from auth import auth_controller
 
 # Linha mágica que instrui o SQLAlchemy a criar todas as tabelas
 # que herdam da nossa Base (definida em database.py) no banco de dados.
@@ -17,6 +19,8 @@ app = FastAPI(
 
 # 2. Inclui o roteador de usuários na aplicação principal
 app.include_router(user_controller.router)
+app.include_router(role_controller.router)
+app.include_router(auth_controller.router)
 
 # 4. Código para rodar o servidor
 if __name__ == '__main__':
