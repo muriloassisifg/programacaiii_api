@@ -32,17 +32,6 @@ class UserCreate(BaseModel):
     profile_image_url: Optional[str] = None
     profile_image_base64: Optional[str] = Field(None, description="Imagem em Base64")
     role_id: int = Field(description="ID do role a ser associado ao usuário")
-    
-    @field_validator('profile_image_url', 'profile_image_base64')
-    @classmethod
-    def validate_at_least_one_image(cls, v, info):
-        # Verifica se pelo menos um dos campos de imagem foi fornecido
-        if info.field_name == 'profile_image_base64':
-            # Este é o último campo a ser validado, então podemos verificar ambos
-            values = info.data
-            if not v and not values.get('profile_image_url'):
-                raise ValueError('Pelo menos um campo de imagem deve ser fornecido: profile_image_url ou profile_image_base64')
-        return v
 
 class UserUpdate(BaseModel):
     full_name: str | None = Field(default=None, min_length=3)
