@@ -9,8 +9,12 @@ class Role(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True)
 
-# Schema Pydantic para criar/atualizar um Role
+# Schema Pydantic para criar um Role
 class RoleCreate(BaseModel):
+    name: str
+
+# Schema Pydantic para atualizar um Role
+class RoleUpdate(BaseModel):
     name: str
 
 # Schema Pydantic para dados públicos

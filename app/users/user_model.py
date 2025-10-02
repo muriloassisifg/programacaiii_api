@@ -1,9 +1,10 @@
 # users/user_model.py
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from pydantic import BaseModel, EmailStr, Field, ConfigDict
+from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
 from database import Base
 from roles.role_model import RolePublic # Importa o schema público de Role
+from typing import Optional
 
 # ==================================
 # MODELO DA TABELA (SQLAlchemy)
@@ -15,6 +16,7 @@ class User(Base):
     hashed_password = Column(String)
     full_name = Column(String, index=True, nullable=True)
     profile_image_url = Column(String, nullable=True)
+    profile_image_base64 = Column(Text, nullable=True)
     # Chave estrangeira que aponta para a tabela 'roles'
     role_id = Column(Integer, ForeignKey("roles.id"))
     # Cria a relação para que possamos acessar o objeto Role a partir de um User
@@ -27,12 +29,25 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8)
     full_name: str | None = Field(default=None, min_length=3)
-    profile_image_url: str | None = None
+    profile_image_url: Optional[str] = None
+    profile_image_base64: Optional[str] = Field(None, description="Imagem em Base64")
     role_id: int = Field(description="ID do role a ser associado ao usuário")
+    
+    @field_validator('profile_image_url', 'profile_image_base64')
+    @classmethod
+    def validate_at_least_one_image(cls, v, info):
+        # Verifica se pelo menos um dos campos de imagem foi fornecido
+        if info.field_name == 'profile_image_base64':
+            # Este é o último campo a ser validado, então podemos verificar ambos
+            values = info.data
+            if not v and not values.get('profile_image_url'):
+                raise ValueError('Pelo menos um campo de imagem deve ser fornecido: profile_image_url ou profile_image_base64')
+        return v
 
 class UserUpdate(BaseModel):
     full_name: str | None = Field(default=None, min_length=3)
-    profile_image_url: str | None = None
+    profile_image_url: Optional[str] = None
+    profile_image_base64: Optional[str] = Field(None, description="Imagem em Base64")
 
 class UserPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -40,5 +55,6 @@ class UserPublic(BaseModel):
     id: int
     email: EmailStr
     full_name: str | None = None
-    profile_image_url: str | None = None
+    profile_image_url: Optional[str] = None
+    profile_image_base64: Optional[str] = None
     role: RolePublic # O perfil agora é um objeto aninhado
