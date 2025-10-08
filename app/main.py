@@ -1,3 +1,4 @@
+import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,10 +8,12 @@ from database import engine, Base
 from roles import role_controller
 from auth import auth_controller
 
-# Linha mágica que instrui o SQLAlchemy a criar todas as tabelas
-# que herdam da nossa Base (definida em database.py) no banco de dados.
-# Isso só deve ser usado em desenvolvimento para facilitar o setup.
-Base.metadata.create_all(bind=engine)
+# Configuração baseada no ambiente
+APP_PROFILE = os.getenv("APP_PROFILE", "DEV")
+
+# Criar tabelas apenas em desenvolvimento
+if APP_PROFILE == "DEV":
+    Base.metadata.create_all(bind=engine)
 
 # 1. Cria a instância principal da aplicação
 app = FastAPI(
@@ -18,13 +21,25 @@ app = FastAPI(
     version="0.1.0"
 )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Para desenvolvimento
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Configuração de CORS baseada no ambiente
+if APP_PROFILE == "DEV":
+    # Configuração permissiva para desenvolvimento
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    # Configuração mais restritiva para produção
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["https://yourdomain.com"],  # Substitua pelo seu domínio
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["*"],
+    )
 
 # 2. Inclui o roteador de usuários na aplicação principal
 app.include_router(user_controller.router)
