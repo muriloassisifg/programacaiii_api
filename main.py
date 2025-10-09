@@ -42,7 +42,7 @@ else:
     # Configuração mais restritiva para produção
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["https://yourdomain.com"],  # Substitua pelo seu domínio
+        allow_origins=["https://teste.com"],  # Substitua pelo seu domínio
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "DELETE"],
         allow_headers=["*"],
