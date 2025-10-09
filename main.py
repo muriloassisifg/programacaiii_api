@@ -7,10 +7,13 @@ from fastapi.middleware.cors import CORSMiddleware
 # Adiciona a pasta app ao Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
 
-from app.users import user_controller
-from app.database import engine, Base
-from app.roles import role_controller
-from app.auth import auth_controller
+# Importa primeiro a base e engine para evitar problemas de ordem
+from database import engine, Base
+
+# Depois importa os controllers
+from users import user_controller
+from roles import role_controller  
+from auth import auth_controller
 
 # Configuração baseada no ambiente
 APP_PROFILE = os.getenv("APP_PROFILE", "DEV")
