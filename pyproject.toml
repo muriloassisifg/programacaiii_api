@@ -25,7 +25,8 @@ version = "0.1.0"
 description = "API para a disciplina de Programação III"
 authors = ["Murilo <murilo.assis@ifg.edu.br.com>"]
 packages = [
-    { include = "main.py" }
+    { include = "main.py" },
+    { include = "app" }
 ]
 
 [tool.poetry.dependencies]
