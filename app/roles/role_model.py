@@ -15,9 +15,16 @@ class Role(Base):
 class RoleCreate(BaseModel):
     name: str
 
+    # Validação: nome deve ter pelo menos 3 caracteres
+    from pydantic import Field
+    name: str = Field(..., min_length=3)
+
 # Schema Pydantic para atualizar um Role
 class RoleUpdate(BaseModel):
     name: str
+    # Validação: nome deve ter pelo menos 3 caracteres
+    from pydantic import Field
+    name: str = Field(..., min_length=3)
 
 # Schema Pydantic para dados públicos
 class RolePublic(BaseModel):

@@ -37,4 +37,11 @@ def update_user(user_id: int, user: user_model.UserUpdate, db: Session = Depends
 @router.delete("/{user_id}", response_model=user_model.UserPublic)
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     """Endpoint para deletar um usuário."""
-    return user_service.delete_user_by_id(db=db, user_id=user_id)
+    # Busca o usuário antes de excluir, garantindo que o relacionamento role está carregado
+    user_to_delete = user_service.get_user_by_id(db, user_id)
+    # Cria uma cópia dos dados para retorno
+    user_data = user_model.UserPublic.model_validate(user_to_delete)
+    # Exclui o usuário
+    user_service.delete_user_by_id(db=db, user_id=user_id)
+    # Retorna o objeto excluído com status 200
+    return user_data
