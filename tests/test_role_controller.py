@@ -21,6 +21,13 @@ def client_and_token():
 
 
 def test_role_crud_sequence(client_and_token):
+    """
+    Testa a sequência completa de operações CRUD para roles.
+    
+    Verifica se é possível criar, alterar e excluir uma role através da API,
+    validando status codes e dados retornados. Usa nomes aleatórios para
+    evitar conflitos entre execuções de teste.
+    """
     client, token = client_and_token
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -49,7 +56,12 @@ def test_role_crud_sequence(client_and_token):
 
 
 def test_role_nome_ausente(client_and_token):
-    """Testa criação de role sem nome (campo obrigatório)."""
+    """
+    Testa criação de role sem nome (campo obrigatório).
+    
+    Verifica se a API rejeita corretamente a criação quando o campo
+    obrigatório 'name' não é fornecido, retornando erro de validação.
+    """
     client, token = client_and_token
     headers = {"Authorization": f"Bearer {token}"}
     role_data = {}
@@ -57,7 +69,12 @@ def test_role_nome_ausente(client_and_token):
     assert resp.status_code == 422, f"Role criada sem nome: {resp.text}"
 
 def test_role_nome_duplicado(client_and_token):
-    """Testa criação de role com nome duplicado."""
+    """
+    Testa criação de role com nome duplicado.
+    
+    Cria uma role, tenta criar outra com o mesmo nome e verifica
+    se a API impede a duplicidade. Limpa os dados após o teste.
+    """
     client, token = client_and_token
     headers = {"Authorization": f"Bearer {token}"}
     role_name = "role_duplicada_teste"
@@ -73,7 +90,12 @@ def test_role_nome_duplicado(client_and_token):
     client.delete(f"/roles/{role_id}", headers=headers)
 
 def test_role_nome_curto(client_and_token):
-    """Testa criação de role com nome muito curto."""
+    """
+    Testa criação de role com nome muito curto.
+    
+    Verifica se a API rejeita nomes com menos de 3 caracteres,
+    conforme validação definida no modelo Pydantic.
+    """
     client, token = client_and_token
     headers = {"Authorization": f"Bearer {token}"}
     role_data = {"name": "a"}
