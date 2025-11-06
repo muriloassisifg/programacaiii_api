@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copia os arquivos de dependências
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock* ./
 
 # Instala Poetry
 RUN pip install poetry
@@ -19,7 +19,8 @@ RUN pip install poetry
 # Configura Poetry para não criar ambiente virtual (já estamos no container)
 RUN poetry config virtualenvs.create false
 
-# Instala as dependências do projeto (sem dependências de desenvolvimento)
+# Regenera o lock file se necessário e instala dependências
+RUN poetry lock --no-update || true
 RUN poetry install --only main --no-interaction --no-ansi
 
 # Copia todo o código da aplicação
