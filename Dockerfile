@@ -19,8 +19,8 @@ RUN pip install poetry
 # Configura Poetry para não criar ambiente virtual (já estamos no container)
 RUN poetry config virtualenvs.create false
 
-# Instala as dependências do projeto 
-RUN poetry install 
+# Instala as dependências do projeto (sem dependências de desenvolvimento)
+RUN poetry install --only main --no-interaction --no-ansi
 
 # Copia todo o código da aplicação
 COPY . .
