@@ -20,8 +20,8 @@ RUN pip install poetry
 RUN poetry config virtualenvs.create false
 
 # Regenera o lock file se necessário e instala dependências
-RUN poetry lock --no-update || true
-RUN poetry install --only main --no-interaction --no-ansi
+RUN poetry lock || true
+RUN poetry install --no-root
 
 # Copia todo o código da aplicação
 COPY . .
